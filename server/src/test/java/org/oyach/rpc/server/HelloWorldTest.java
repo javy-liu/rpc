@@ -49,4 +49,10 @@ public class HelloWorldTest {
 
         System.out.println(client.helloString("oyach"));
     }
+
+    @Test
+    public void test02() throws Exception {
+        System.out.println(client.helloNull());
+
+    }
 }
