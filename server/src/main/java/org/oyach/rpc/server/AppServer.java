@@ -1,12 +1,12 @@
 package org.oyach.rpc.server;
 
+import com.facebook.fb303.FacebookService;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
-import service.demo.Hello;
 
 /**
  * @author liuzhenyuan
@@ -15,20 +15,26 @@ import service.demo.Hello;
  */
 public class AppServer {
 
-    public static void main(String[] args) throws TTransportException {
-        TServerTransport serverTransport = new TServerSocket(9090);
+    public static final int PORT = 9090;
 
-        Hello.Iface helloService = new HelloServiceImpl();
+    public static void main(String[] args) {
+        try {
+            TServerTransport serverTransport = new TServerSocket(PORT);
 
-        // 关联处理器与 Hello 服务的实现
-        TProcessor processor = new Hello.Processor<>(helloService);
+            FacebookService.Iface facebookService = new FacebookServiceImpl();
 
-        TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
+            // 关联处理器与 Hello 服务的实现
+            TProcessor processor = new FacebookService.Processor<>(facebookService);
 
-        // Use this for a multithreaded server
-        // TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+            TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
 
-        System.out.println("Starting the simple server...");
-        server.serve();
+            // Use this for a multithreaded server
+            // TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+
+            System.out.println("Starting the simple server...");
+            server.serve();
+        } catch (TTransportException e) {
+            e.printStackTrace();
+        }
     }
 }
